@@ -4,15 +4,14 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using TaskManager.DataAccess.Infrastructure;
-using TaskManager.Models;
+using Task = TaskManager.DataAccess.Entities.Task;
 
 namespace TaskManager.DataAccess.Repositories
 {
     public class TaskRepository : BaseRepository<Task>
     {
-        public TaskRepository(DbContext context) : base(context)
+        public TaskRepository(TaskManagerDbContext context) : base(context)
         {
-            
         }
     }
 }

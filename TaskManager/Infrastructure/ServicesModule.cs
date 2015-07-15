@@ -12,8 +12,6 @@ namespace TaskManager.Infrastructure
     {
         public override void Load()
         {
-            Bind<ICategoryService>().To<CategoryService>();
-            Bind<ITaskService>().To<TaskService>();
             Bind<ISubtaskService>().To<SubtaskService>();
         }
     }

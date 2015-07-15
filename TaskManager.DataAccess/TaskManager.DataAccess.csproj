@@ -50,6 +50,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,6 +62,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Category.cs" />
+    <Compile Include="Entities\Subtask.cs" />
+    <Compile Include="Entities\Task.cs" />
     <Compile Include="Infrastructure\DataAccessModule.cs" />
     <Compile Include="Infrastructure\IEntity.cs" />
     <Compile Include="Infrastructure\IRepository.cs" />
@@ -67,11 +72,17 @@
     <Compile Include="Infrastructure\IUnitOfWork.cs" />
     <Compile Include="Infrastructure\IUnitOfWorkFactory.cs" />
     <Compile Include="Infrastructure\BaseRepository.cs" />
+    <Compile Include="Infrastructure\RepositoryFactory.cs" />
     <Compile Include="Infrastructure\TaskManagerDbContext.cs" />
     <Compile Include="Infrastructure\UnitOfWork.cs" />
+    <Compile Include="Infrastructure\UnitOfWorkFactory.cs" />
     <Compile Include="Migrations\201507141646063_InitialMigration.cs" />
     <Compile Include="Migrations\201507141646063_InitialMigration.Designer.cs">
       <DependentUpon>201507141646063_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507151720246_Added_Required_attributes_to_fields.cs" />
+    <Compile Include="Migrations\201507151720246_Added_Required_attributes_to_fields.Designer.cs">
+      <DependentUpon>201507151720246_Added_Required_attributes_to_fields.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -86,6 +97,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201507141646063_InitialMigration.resx">
       <DependentUpon>201507141646063_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507151720246_Added_Required_attributes_to_fields.resx">
+      <DependentUpon>201507151720246_Added_Required_attributes_to_fields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

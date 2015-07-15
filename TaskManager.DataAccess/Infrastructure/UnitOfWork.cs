@@ -9,17 +9,22 @@ namespace TaskManager.DataAccess.Infrastructure
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext _context;
+        private readonly TaskManagerDbContext _context;
         private readonly IRepositoryFactory _repositoryFactory;
 
-        public UnitOfWork(DbContext context, IRepositoryFactory repositoryFactory)
+//        public UnitOfWork(DbContext context, IRepositoryFactory repositoryFactory)
+//        {
+//            _context = context;
+//            _repositoryFactory = repositoryFactory;
+//        }
+        public UnitOfWork()
         {
-            _context = context;
-            _repositoryFactory = repositoryFactory;
+            _context = new TaskManagerDbContext();
+            _repositoryFactory = new RepositoryFactory();
         }
         public IRepository<T> Repository<T>() where T : class, IEntity
         {
-            return _repositoryFactory.Resolve<T>(_context);
+            return _repositoryFactory.Create<T>(_context);
         }
         public void SaveChanges()
         {

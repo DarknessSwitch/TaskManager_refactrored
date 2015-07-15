@@ -1,75 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using TaskManager.DataAccess.Entities;
-using TaskManager.DataAccess.Repositories;
 using TaskManager.DataAccess.Infrastructure;
 using TaskManager.Services.Concrete;
 using TaskManager.Services.Interfaces;
 
 namespace TaskManager.Controllers
 {
-    [RoutePrefix("api/category")]
-    public class CategoryController : ApiController
+    [RoutePrefix("api/subtask")]
+    public class SubtaskController : ApiController
     {
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
-//        private readonly ICategoryService _categoryService;
-//        public CategoryController(ICategoryService categoryService)
-//        {
-//            _categoryService = categoryService;
-//        }
-        public CategoryController()
+        private readonly ISubtaskService _subtaskService;
+        public SubtaskController()
         {
             _unitOfWorkFactory = new UnitOfWorkFactory();
+            _subtaskService = new SubtaskService();
         }
 
-        // GET api/Category
+        // GET api/Subtask
         [HttpGet]
-        public IEnumerable<Category> Get()
+        public IEnumerable<Subtask> Get()
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                return unitOfWork.Repository<Category>().GetAll().AsEnumerable();
+                return unitOfWork.Repository<Subtask>().GetAll().AsEnumerable();
             }
         }
 
-        // GET api/Category/5
+        // GET api/Subtask/5
         [HttpGet]
         [Route("{id:int}")]
-        public Category Get(int id)
+        public Subtask Get(int id)
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                var category = unitOfWork.Repository<Category>().GetOne(x => x.Id == id);
+                var subtask = unitOfWork.Repository<Subtask>().GetOne(x => x.Id == id);
 
-                if (category == null)
+                if (subtask == null)
                 {
                     throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
                 }
-                return category;
-            } 
+                return subtask;
+            }
         }
 
-        // POST api/Category
+        // POST api/Subtask
         [HttpPost]
-        [Route("post", Name = "PostCategory")]
-        public HttpResponseMessage Post(Category category)
+        [Route("post", Name = "PostSubtask")]
+        public HttpResponseMessage Post(Subtask subtask)
         {
             if (ModelState.IsValid)
             {
                 using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
                 {
-                     unitOfWork.Repository<Category>().AddItem(category);
+                     unitOfWork.Repository<Subtask>().AddItem(subtask);
                 }
 
-                HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, category);
-//                response.Headers.Location = new Uri(Url.Link("DefaultApi", new { id = category.Id }));
-                response.Headers.Location = new Uri(Url.Link("PostCategory", new { id = category.Id }));
+                _subtaskService.CheckSubtasks(subtask.TaskId);
+
+                HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, subtask);
+//                response.Headers.Location = new Uri(Url.Link("DefaultApi", new { id = subtask.Id }));
+                response.Headers.Location = new Uri(Url.Link("PostSubtask", new { id = subtask.Id }));
+                
                 return response;
             }
             else
@@ -78,16 +76,16 @@ namespace TaskManager.Controllers
             }
         }
 
-        // PUT api/Category/5
+        // PUT api/Subtask/5
         [HttpPut]
         [Route("put/{id:int}")]
-        public HttpResponseMessage Put(int id, Category category)
+        public HttpResponseMessage Put(int id, Subtask subtask)
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                if (ModelState.IsValid && id == category.Id)
+                if (ModelState.IsValid && id == subtask.Id)
                 {
-                    unitOfWork.Repository<Category>().AttachItem(category);
+                    unitOfWork.Repository<Subtask>().AttachItem(subtask);
 
                     try
                     {
@@ -98,6 +96,8 @@ namespace TaskManager.Controllers
                         return Request.CreateResponse(HttpStatusCode.NotFound);
                     }
 
+                    _subtaskService.CheckSubtasks(subtask.TaskId);
+
                     return Request.CreateResponse(HttpStatusCode.OK);
                 }
                 else
@@ -107,20 +107,20 @@ namespace TaskManager.Controllers
             }
         }
 
-        // DELETE api/Category/5
+        // DELETE api/Subtask/5
         [HttpDelete]
         [Route("delete/{id:int}")]
         public HttpResponseMessage Delete(int id)
         {
             using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                Category category = unitOfWork.Repository<Category>().GetOne(x=>x.Id==id);
-                if (category == null)
+                Subtask subtask = unitOfWork.Repository<Subtask>().GetOne(x=>x.Id==id);
+                if (subtask == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
-                unitOfWork.Repository<Category>().DeleteItem(category);
+                unitOfWork.Repository<Subtask>().DeleteItem(subtask);
 
                 try
                 {
@@ -131,7 +131,9 @@ namespace TaskManager.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
-                return Request.CreateResponse(HttpStatusCode.OK, category);
+                _subtaskService.CheckSubtasks(subtask.TaskId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, subtask);
             } 
         }
 

@@ -5,15 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManager.DataAccess.Infrastructure;
-using TaskManager.Models;
+using Subtask = TaskManager.DataAccess.Entities.Subtask;
 
 namespace TaskManager.DataAccess.Repositories
 {
     public class SubtaskRepository : BaseRepository<Subtask>
     {
-        public SubtaskRepository(DbContext context) : base(context)
+        public SubtaskRepository(TaskManagerDbContext context) : base(context)
         {
-            
         }
     }
 }

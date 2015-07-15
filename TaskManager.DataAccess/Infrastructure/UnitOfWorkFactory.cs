@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ninject;
 
 namespace TaskManager.DataAccess.Infrastructure
 {
-    public interface IRepositoryFactory
+    public class UnitOfWorkFactory : IUnitOfWorkFactory
     {
-        IRepository<T> Create<T>(TaskManagerDbContext context) where T : class ,IEntity;
+        public IUnitOfWork CreateUnitOfWork()
+        {
+            return new UnitOfWork();
+        }
     }
 }

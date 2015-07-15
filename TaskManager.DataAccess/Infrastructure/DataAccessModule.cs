@@ -7,7 +7,9 @@ using System.Text;
 using Ninject.Modules;
 using Ninject.Extensions.Factory;
 using TaskManager.DataAccess.Repositories;
-using TaskManager.Models;
+using Category = TaskManager.DataAccess.Entities.Category;
+using Subtask = TaskManager.DataAccess.Entities.Subtask;
+using Task = TaskManager.DataAccess.Entities.Task;
 
 namespace TaskManager.DataAccess.Infrastructure
 {
@@ -15,8 +17,8 @@ namespace TaskManager.DataAccess.Infrastructure
     {
         public override void Load()
         {
-            Bind<IUnitOfWorkFactory>().ToFactory();
-            Bind<IRepositoryFactory>().ToFactory();
+            Bind<IRepositoryFactory>().To<RepositoryFactory>();
+            Bind<IUnitOfWorkFactory>().To<UnitOfWorkFactory>();
             Bind<IRepository<Category>>().To<CategoryRepository>();
             Bind<IRepository<Task>>().To<TaskRepository>();
             Bind<IRepository<Subtask>>().To<SubtaskRepository>();

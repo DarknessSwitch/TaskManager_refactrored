@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using TaskManager.DataAccess.Entities;
 using TaskManager.DataAccess.Infrastructure;
-using TaskManager.Models;
 using TaskManager.Services.Interfaces;
 
 namespace TaskManager.Services.Concrete
@@ -12,9 +12,9 @@ namespace TaskManager.Services.Concrete
     {
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 
-        public SubtaskService(IUnitOfWorkFactory unitOfWorkFactory)
+        public SubtaskService()
         {
-            _unitOfWorkFactory = unitOfWorkFactory;
+            _unitOfWorkFactory = new UnitOfWorkFactory();
         }
 
         public void CheckSubtasks(int taskId)
@@ -34,7 +34,7 @@ namespace TaskManager.Services.Concrete
             }
         }
 
-        public bool AreSubtasksDone(Task task)
+        private bool AreSubtasksDone(Task task)
         {
             return task.Subtasks.Count() == task.Subtasks.Count(st => st.IsDone);
         }

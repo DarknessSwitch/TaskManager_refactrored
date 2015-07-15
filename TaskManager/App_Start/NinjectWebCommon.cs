@@ -1,5 +1,8 @@
+using System.Web.Mvc.Razor;
 using TaskManager.DataAccess.Infrastructure;
 using TaskManager.Infrastructure;
+using Ninject.Extensions.Factory;
+using TaskManager.Controllers;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(TaskManager.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(TaskManager.App_Start.NinjectWebCommon), "Stop")]
@@ -63,8 +66,10 @@ namespace TaskManager.App_Start
         /// </summary>
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
-        {
+        {    
+            kernel.Bind<CategoryController>().ToSelf();
             kernel.Load(new DataAccessModule(), new ServicesModule());
+            WebApiApplication.Container = kernel;
         }        
     }
 }

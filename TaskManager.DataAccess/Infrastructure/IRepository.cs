@@ -8,7 +8,6 @@ namespace TaskManager.DataAccess.Infrastructure
 {
     public interface IRepository<T> where T : IEntity
     {
-        T Get(int id);
         T GetOne(Func<T, Boolean> predicate);
         IEnumerable<T> GetAll();
         IEnumerable<T> Get(Func<T, bool> predicate);

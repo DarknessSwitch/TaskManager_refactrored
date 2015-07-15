@@ -9,19 +9,15 @@ namespace TaskManager.DataAccess.Infrastructure
 {
     public abstract class BaseRepository<T> : IRepository<T> where T : class , IEntity
     {
-        private readonly DbContext _context;
+        private readonly TaskManagerDbContext _context;
         private readonly DbSet<T> _dbSet;
 
-        protected BaseRepository(DbContext context)
+        protected BaseRepository(TaskManagerDbContext context)
         {
             _context = context;
-            _dbSet = context.Set<T>();
+            _dbSet = _context.Set<T>();
         }
 
-        public T Get(int id)
-        {
-            return _dbSet.FirstOrDefault(x => x.Id == id);
-        }
 
         public T GetOne(Func<T, bool> predicate)
         {
@@ -41,15 +37,20 @@ namespace TaskManager.DataAccess.Infrastructure
         public void AddItem(T entity)
         {
             _dbSet.Add(entity);
+            _context.SaveChanges();
         }
         public void AttachItem(T entity)
         {
             _dbSet.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
+            _context.SaveChanges();
         }
         public void DeleteItem(T entity)
         {
-            _dbSet.Remove(entity);
+//            _dbSet.Remove(entity);
+            _dbSet.Attach(entity);
+            _context.Entry(entity).State = EntityState.Deleted;
+            _context.SaveChanges();
         }
 
         public void SaveChanges()

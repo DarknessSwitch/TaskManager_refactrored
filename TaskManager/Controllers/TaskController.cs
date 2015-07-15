@@ -1,75 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using TaskManager.DataAccess.Entities;
-using TaskManager.DataAccess.Repositories;
 using TaskManager.DataAccess.Infrastructure;
 using TaskManager.Services.Concrete;
 using TaskManager.Services.Interfaces;
 
 namespace TaskManager.Controllers
 {
-    [RoutePrefix("api/category")]
-    public class CategoryController : ApiController
+    [RoutePrefix("api/task")]
+    public class TaskController : ApiController
     {
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
-//        private readonly ICategoryService _categoryService;
-//        public CategoryController(ICategoryService categoryService)
-//        {
-//            _categoryService = categoryService;
-//        }
-        public CategoryController()
+        public TaskController()
         {
             _unitOfWorkFactory = new UnitOfWorkFactory();
         }
 
-        // GET api/Category
+        // GET api/Task
         [HttpGet]
-        public IEnumerable<Category> Get()
+        public IEnumerable<Task> Get()
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                return unitOfWork.Repository<Category>().GetAll().AsEnumerable();
+                return unitOfWork.Repository<Task>().GetAll().AsEnumerable();
             }
         }
 
-        // GET api/Category/5
+        // GET api/Task/5
         [HttpGet]
         [Route("{id:int}")]
-        public Category Get(int id)
+        public Task Get(int id)
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                var category = unitOfWork.Repository<Category>().GetOne(x => x.Id == id);
+                var task = unitOfWork.Repository<Task>().GetOne(x => x.Id == id);
 
-                if (category == null)
+                if (task == null)
                 {
                     throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
                 }
-                return category;
-            } 
+                return task;
+            }               
         }
 
-        // POST api/Category
+        // POST api/Task
         [HttpPost]
-        [Route("post", Name = "PostCategory")]
-        public HttpResponseMessage Post(Category category)
+        [Route("post", Name = "PostTask")]
+        public HttpResponseMessage Post(Task task)
         {
             if (ModelState.IsValid)
             {
                 using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
                 {
-                     unitOfWork.Repository<Category>().AddItem(category);
+                     unitOfWork.Repository<Task>().AddItem(task);
                 }
-
-                HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, category);
-//                response.Headers.Location = new Uri(Url.Link("DefaultApi", new { id = category.Id }));
-                response.Headers.Location = new Uri(Url.Link("PostCategory", new { id = category.Id }));
+                
+                HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, task);
+//                response.Headers.Location = new Uri(Url.Link("DefaultApi", new { id = task.Id }));
+                response.Headers.Location = new Uri(Url.Link("PostTask", new { id = task.Id }));
                 return response;
             }
             else
@@ -78,16 +71,16 @@ namespace TaskManager.Controllers
             }
         }
 
-        // PUT api/Category/5
+        // PUT api/Task/5
         [HttpPut]
         [Route("put/{id:int}")]
-        public HttpResponseMessage Put(int id, Category category)
+        public HttpResponseMessage Put(int id, Task task)
         {
             using (var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                if (ModelState.IsValid && id == category.Id)
+                if (ModelState.IsValid && id == task.Id)
                 {
-                    unitOfWork.Repository<Category>().AttachItem(category);
+                    unitOfWork.Repository<Task>().AttachItem(task);
 
                     try
                     {
@@ -107,20 +100,20 @@ namespace TaskManager.Controllers
             }
         }
 
-        // DELETE api/Category/5
+        // DELETE api/Task/5
         [HttpDelete]
         [Route("delete/{id:int}")]
         public HttpResponseMessage Delete(int id)
         {
             using(var unitOfWork = _unitOfWorkFactory.CreateUnitOfWork())
             {
-                Category category = unitOfWork.Repository<Category>().GetOne(x=>x.Id==id);
-                if (category == null)
+                Task task = unitOfWork.Repository<Task>().GetOne(x=>x.Id==id);
+                if (task == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
-                unitOfWork.Repository<Category>().DeleteItem(category);
+                unitOfWork.Repository<Task>().DeleteItem(task);
 
                 try
                 {
@@ -131,7 +124,7 @@ namespace TaskManager.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
-                return Request.CreateResponse(HttpStatusCode.OK, category);
+                return Request.CreateResponse(HttpStatusCode.OK, task);
             } 
         }
 
